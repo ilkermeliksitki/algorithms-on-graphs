@@ -25,15 +25,15 @@ struct node **create_adj_list(int n, int m)
     int a, b;
     for (int i = 0; i < m; ++i) {
         scanf("%d %d", &a, &b);
-        struct node *n = malloc(sizeof(struct node));
-        n->vertex = a;
-        n->next = NULL;
+        struct node *new_node = malloc(sizeof(struct node));
+        new_node->vertex = a;
+        new_node->next = NULL;
         if (adj_list[a] == NULL) {
-            adj_list[a] = n;
+            adj_list[a] = new_node;
         } else {
             struct node *second_node = adj_list[a]->next;
-            n->next = second_node;
-            adj_list[a]->next = n;
+            new_node->next = second_node;
+            adj_list[a]->next = new_node;
         }
     }
     return adj_list;
