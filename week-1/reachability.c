@@ -18,7 +18,7 @@ int main(void)
 
 struct node **create_adj_list(int n, int m)
 {
-    struct node **adj_list = malloc(sizeof(struct node *) * n + 1);
+    struct node **adj_list = malloc(sizeof(struct node *) * (n + 1));
     for (int i = 0; i < n + 1; ++i) {
         adj_list[i] = NULL;
     }
