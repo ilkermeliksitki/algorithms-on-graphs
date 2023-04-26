@@ -35,7 +35,8 @@ int main() {
     for (int i = 0; i < 2 * m; i += 2) {
         int a = data[i] - 1;
         int b = data[i + 1] - 1;
-        adj[a][b] = 1; adj[b][a] = 1;
+        adj[a][b] = 1;
+        adj[b][a] = 1;
     }
     
     // call reach function and print result
