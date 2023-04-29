@@ -68,7 +68,7 @@ int number_of_components(int **adj, int n){
  * @param u: the current node.
  * @param adj: the adjacency matrix of the graph.
  * @param n: the number of nodes.
- * @param u: array showing visited nodes.
+ * @param visited: array showing visited nodes.
  */
 void dfs(int u, int **adj, int n, int *visited){
     visited[u] = 1;
