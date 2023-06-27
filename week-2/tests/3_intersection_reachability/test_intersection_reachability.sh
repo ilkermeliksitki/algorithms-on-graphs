@@ -6,7 +6,7 @@
 gcc -g -pipe -O0 -std=c11 ../../../week-2/intersection_reachability.c -lm -o a.out &&
 
 # define an array of test case numbers
-test_cases=("01" "02" "03")
+test_cases=("01" "02" "03" "04")
 
 # colors
 RED='\033[0;31m'
@@ -27,12 +27,20 @@ do
         memory_leak_info="${RED_BOLD}with memory leak${NC}"
     fi
 
-    # check if valgrind reported any conditional jump based on uninitialised value(s)
+    # check if valgrind reports any conditional jump based on uninitialised value(s)
     if ! [[ "$valgrind_output" =~ "Conditional jump or move depends on uninitialised value(s)" ]]; then
         conditional_jump=""
     else
         conditional_jump=" - ${RED_BOLD}with conditional jump based on uninitialised value${NC}"
     fi
+
+    # check if valgrind reports any invalid write to "unallocated memory"
+    if ! [[ "$valgrind_output" =~ "Invalid write of size" ]]; then
+        invalid_write=""
+    else
+        invalid_write=" - ${RED_BOLD}invalid write to unallocated memory${NC}"
+    fi
+    
 
     # execute the program again and capture the program's output
     result=$(./a.out < "cases/$i")
@@ -43,7 +51,7 @@ do
     # compare the result and the expected output
     # if there is a trailing space, it will appear as a red block character.
     if [ "$result" != "$expected" ]; then
-        echo -e "Test case $i failed ${memory_leak_info}${conditional_jump}"
+        echo -e "Test case $i failed ${memory_leak_info}${conditional_jump}${invalid_write}"
         echo "Input:"
         cat "cases/$i"
         echo -e "\nYour result:"
@@ -53,7 +61,7 @@ do
         echo
         exit 1
     else
-        echo -e "Test case $i passed ${memory_leak_info}${conditional_jump}"
+        echo -e "Test case $i passed ${memory_leak_info}${conditional_jump}${invalid_write}"
     fi
 done
 
