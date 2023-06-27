@@ -4,9 +4,10 @@
 #include <stdbool.h>
 
 // function prototypes
-int find_sccs(int **adj_list, int *out_going_edge_count, int n);
-void push(int *rec_stack, int *top, int v);
 int pop(int *rec_stack, int *top);
+void push(int *rec_stack, int *top, int v);
+int find_sccs(int **adj_list, int *out_going_edge_count, int n);
+int **reverse_adj_list(int **adj_list, int *out_going_edge_count, int *incoming_edge_count, int n);
 
 int main(void)
 {
@@ -44,6 +45,17 @@ int main(void)
     return 0;
 }
 
+/**
+ * dfs - depth-first search function
+ * @v:                    current vertex
+ * @adj_list:             adjacency list representing directed graph
+ * @out_going_edge_count: array storing the outgoing edge number per vertex
+ * @visited:              array storing the visited vertices
+ * @rec_stack:            stack array storing the recursively called vertices in order
+ * @top:                  pointer indicating the top location of @rec_stack
+ *
+ * Return:                None
+ */
 void dfs(int v, int **adj_list, int *out_going_edge_count, int *visited, int *rec_stack, int *top)
 {
     visited[v] = 1;
@@ -56,6 +68,16 @@ void dfs(int v, int **adj_list, int *out_going_edge_count, int *visited, int *re
     push(rec_stack, top, v);
 }
 
+/**
+ * reverse_adj_list - reverse the directions of the adjacenty list
+ * @adj_list:             adjacency list representing directed graph
+ * @out_going_edge_count: array storing the outgoing edge number per vertex
+ * @incoming_edge_count:  array storing the incoming edge number per vertex
+ * @n:                    number of vertices
+ *
+ * Return:                2D reversed adjacency list
+ *
+ */
 int **reverse_adj_list(int **adj_list, int *out_going_edge_count, int *incoming_edge_count, int n)
 {
     int **reversed_adj_list = calloc(n, sizeof(int *));
@@ -72,12 +94,23 @@ int **reverse_adj_list(int **adj_list, int *out_going_edge_count, int *incoming_
     return reversed_adj_list;
 }
 
+/**
+ * find_sccs - finds strongly connected components of a graphs
+ * @adj_list:             adjacency list representing directed graph
+ * @out_going_edge_count: array storing the outgoing edge number per vertex
+ * @n:                    number of vertices
+ *
+ * The function performs DFS first on G^R and then fill the the @rec_stack
+ * in the order of visit. Then, again, perfoms DFS on G to count the number
+ * of SCCs. Every performed DFS for a particular vertex means one SCC.
+ *
+ * Return:                the number of SCCs
+ */
 int find_sccs(int **adj_list, int *out_going_edge_count, int n)
 {
     int top = -1;
-    int scc_count = 0;
     int *visited = calloc(n, sizeof(int));
-    int *rec_stack = calloc(n, sizeof(int));
+    int *rec_stack = calloc(2 * n, sizeof(int));
     int *incoming_edge_count = calloc(n, sizeof(int));
 
     // create the reversed adj_list (graph)
@@ -90,25 +123,27 @@ int find_sccs(int **adj_list, int *out_going_edge_count, int n)
         }
     }
 
-    // reset visited array
-     memset(visited, 0, n * sizeof(int));
+    // reset visited array to zeros
+    memset(visited, 0, n * sizeof(int));
 
-     while (top != -1) {
-         int v = pop(rec_stack, &top);
-         if (visited[v] == 0) {
-             dfs(v, adj_list, out_going_edge_count, visited, rec_stack, &top);
-             scc_count++;
-         }
-     }
+    // find the number of strongly connected components (SCCs)
+    int scc_count = 0;
+    while (top != -1) {
+        int v = pop(rec_stack, &top);
+        if (visited[v] == 0) {
+            dfs(v, adj_list, out_going_edge_count, visited, rec_stack, &top);
+            scc_count++;
+        }
+    }
 
-    // free memory
-   // free(visited);
-    //free(rec_stack);
-    //free(incoming_edge_count);
-    //for (int i = 0; i < n; ++i) {
-     //   free(reversed_adj_list[i]);
-    //}
-    //free(reversed_adj_list);
+    // free the allocated memory
+    for (int i = 0; i < n; ++i) {
+        free(reversed_adj_list[i]);
+    }
+    free(reversed_adj_list);
+    free(visited);
+    free(rec_stack);
+    free(incoming_edge_count);
 
     return scc_count;
 }
