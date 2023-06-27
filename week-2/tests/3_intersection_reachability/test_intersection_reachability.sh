@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#!/bin/bash
-
 # compile the C code with debugging symbols
 gcc -g -pipe -O0 -std=c11 ../../../week-2/intersection_reachability.c -lm -o a.out &&
 
