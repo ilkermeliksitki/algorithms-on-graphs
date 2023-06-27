@@ -39,7 +39,6 @@ do
         invalid_write=" - ${RED_BOLD}invalid write to unallocated memory${NC}"
     fi
     
-
     # execute the program again and capture the program's output
     result=$(./a.out < "cases/$i")
 
