@@ -65,7 +65,6 @@ int main(void)
  * them.
  *
  * Return:      1, if the graph bipartite, 0 otherwise
- *
  */
 int bipartite(int **adj_list, int *edge_count, int n)
 {
@@ -76,7 +75,11 @@ int bipartite(int **adj_list, int *edge_count, int n)
         visited[i] = 0;
         colored[i] = false;
     }
-    // pick the first vertex having non-zero number of edge
+    /* pick the first vertex having non-zero number of edge
+     * edge_count is guaranted to have at least one non-zero
+     * entry i.e source variable will be initialized according
+     * to the inputs of the question
+     */
     int source;
     for (int i = 0; i < n; ++i) {
         if (edge_count[i] != 0) {
