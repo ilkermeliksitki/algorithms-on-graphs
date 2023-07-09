@@ -4,7 +4,7 @@
 gcc -g -pipe -O0 -std=c11 ../../../week-3/flight_segments.c -Wall -lm -o a.out &&
 
 # define an array of test case numbers
-test_cases=("01" "02" "03")
+test_cases=("01" "02" "03" "04")
 
 # colors
 RED='\033[0;31m'
