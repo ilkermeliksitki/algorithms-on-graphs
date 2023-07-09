@@ -84,10 +84,11 @@ int bipartite(int **adj_list, int *edge_count, int n)
             break;
         }
     }
+    bool found_color_conflict = false;
     visited[source] = 1;
     colored[source] = true;
     enqueue(q, source);
-    while (!is_empty(q)) {
+    while (!is_empty(q) && !found_color_conflict) {
         int current = dequeue(q);
         for (int i = 0; i < edge_count[current]; ++i) {
             int neighbor = adj_list[current][i];
@@ -97,11 +98,8 @@ int bipartite(int **adj_list, int *edge_count, int n)
                 colored[neighbor] = !colored[current];
             }
             if (colored[current] == colored[neighbor]) {
-                free(visited);
-                free(colored);
-                free(q->nodes);
-                free(q);
-                return 0;
+                found_color_conflict = true;
+                break;
             }
         }
     }
@@ -109,7 +107,7 @@ int bipartite(int **adj_list, int *edge_count, int n)
     free(colored);
     free(q->nodes);
     free(q);
-    return 1;
+    return found_color_conflict ? 0 : 1;
 }
 
 /**
