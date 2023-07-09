@@ -61,8 +61,8 @@ int main(void)
  *
  * this function checks if the graph being represented with
  * adjacenty list bipartite by utilizing the breadth first
- * search and assigning color 'w'(white), 'b'(black) to the
- * vertices while exploring the them.
+ * search and assigning color to the vertices while exploring
+ * them.
  *
  * Return:      1, if the graph bipartite, 0 otherwise
  *
@@ -71,20 +71,21 @@ int bipartite(int **adj_list, int *edge_count, int n)
 {
     struct queue *q = initialize_queue();
     int *visited = malloc(n * sizeof(int));
-    char *color = malloc(n * sizeof(char));
+    bool *colored = malloc(n * sizeof(bool));
     for (int i = 0; i < n; ++i) {
         visited[i] = 0;
-        color[i] = '-';
+        colored[i] = false;
     }
     // pick the first vertex having non-zero number of edge
     int source;
     for (int i = 0; i < n; ++i) {
         if (edge_count[i] != 0) {
             source = i;
+            break;
         }
     }
     visited[source] = 1;
-    color[source] = 'w';
+    colored[source] = true;
     enqueue(q, source);
     while (!is_empty(q)) {
         int current = dequeue(q);
@@ -93,16 +94,11 @@ int bipartite(int **adj_list, int *edge_count, int n)
             if (!visited[neighbor]) {
                 enqueue(q, neighbor);
                 visited[neighbor] = 1;
-                if (color[neighbor] == '-') {
-                    if (color[current] == 'w')
-                        color[neighbor] = 'b';
-                    else 
-                        color[neighbor] = 'w'; 
-                }
+                colored[neighbor] = !colored[current];
             }
-            if (color[current] == color[neighbor]) {
+            if (colored[current] == colored[neighbor]) {
                 free(visited);
-                free(color);
+                free(colored);
                 free(q->nodes);
                 free(q);
                 return 0;
@@ -110,7 +106,7 @@ int bipartite(int **adj_list, int *edge_count, int n)
         }
     }
     free(visited);
-    free(color);
+    free(colored);
     free(q->nodes);
     free(q);
     return 1;
